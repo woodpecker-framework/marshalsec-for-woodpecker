@@ -2,3 +2,6 @@
 .settings
 .project
 target
+.idea
+.DS_Store
+src/main/java/test/

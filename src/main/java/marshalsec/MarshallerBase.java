@@ -58,6 +58,27 @@ public abstract class MarshallerBase <T> implements UtilFactory {
         return ToStringUtil.makeSpringAOPToStringTrigger(obj);
     }
 
+    public byte[] apiRun(String gadgetName,String[] gadgetArgs) throws Exception {
+        GadgetType type = GadgetType.valueOf(gadgetName);
+        T marshal = null;
+        try {
+            System.setSecurityManager(new SideEffectSecurityManager());
+            Object o = createObject(type, expandArguments(gadgetArgs));
+            if ( o instanceof byte[] || o instanceof String ) {
+                // already marshalled by delegate
+                @SuppressWarnings ( "unchecked" )
+                T alreadyMarshalled = (T) o;
+                marshal = alreadyMarshalled;
+            }
+            else {
+                marshal = marshal(o);
+            }
+        } finally {
+            System.setSecurityManager(null);
+        }
+
+        return (byte[])marshal;
+    }
 
     /**
      * @param args
@@ -113,8 +134,7 @@ public abstract class MarshallerBase <T> implements UtilFactory {
 
             if ( all ) {
                 runAll(test, verbose, false, escape);
-            }
-            else {
+            } else {
                 String[] gadgetArgs = new String[args.length - argoff];
                 System.arraycopy(args, argoff, gadgetArgs, 0, args.length - argoff);
 

