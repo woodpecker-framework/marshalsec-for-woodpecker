@@ -58,6 +58,19 @@ public abstract class MarshallerBase <T> implements UtilFactory {
         return ToStringUtil.makeSpringAOPToStringTrigger(obj);
     }
 
+
+    public Object getObject(String gadgetName,String[] gadgetArgs) throws Exception {
+        GadgetType type = GadgetType.valueOf(gadgetName);
+        Object obj = null;
+        try {
+            System.setSecurityManager(new SideEffectSecurityManager());
+            obj = createObject(type, expandArguments(gadgetArgs));
+        } finally {
+            System.setSecurityManager(null);
+        }
+        return obj;
+    }
+
     public byte[] apiRun(String gadgetName,String[] gadgetArgs) throws Exception {
         GadgetType type = GadgetType.valueOf(gadgetName);
         T marshal = null;
