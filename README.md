@@ -1,4 +1,4 @@
-# ysoserial-for-woodpecker
+# marshalsec-for-woodpecker
 
 ## 0x01 简介
 `marshalsec-for-woodpecker`是基于 [marshalsec](https://github.com/mbechler/marshalsec)开放第三方调用api ,为woodpecker框架定制开发的各类反序列化gadget集成库。
